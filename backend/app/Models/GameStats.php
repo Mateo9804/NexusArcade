@@ -9,6 +9,7 @@ class GameStats extends Model
     protected $fillable = [
         'user_id', 
         'game_name', 
+        'total_chips',
         'games_played', 
         'games_won', 
         'games_lost', 

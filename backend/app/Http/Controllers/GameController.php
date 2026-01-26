@@ -50,7 +50,8 @@ class GameController extends Controller
             'time' => 'required|integer',
             'moves' => 'nullable|integer',
             'difficulty' => 'nullable|string',
-            'lives_left' => 'nullable|integer'
+            'lives_left' => 'nullable|integer',
+            'total_chips' => 'nullable|integer'
         ]);
 
         $user = $request->user();
@@ -58,6 +59,10 @@ class GameController extends Controller
         $stats = GameStats::firstOrCreate(
             ['user_id' => $user->id, 'game_name' => $request->game_name]
         );
+
+        if ($request->total_chips !== null) {
+            $stats->total_chips = $request->total_chips;
+        }
 
         $stats->games_played += 1;
         if ($request->result === 'won') {
