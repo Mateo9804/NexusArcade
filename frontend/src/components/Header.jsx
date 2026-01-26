@@ -14,11 +14,6 @@ const Header = ({ onViewStats, onGoHome }) => {
     setIsAuthModalOpen(true);
   };
 
-  const openRegister = () => {
-    setAuthView('register');
-    setIsAuthModalOpen(true);
-  };
-
   return (
     <>
       <header className="sticky top-0 z-50 bg-white dark:bg-[#020617]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 transition-colors duration-300">
@@ -74,12 +69,6 @@ const Header = ({ onViewStats, onGoHome }) => {
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <button 
-                  onClick={openRegister}
-                  className="text-sm font-black text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors uppercase tracking-widest"
-                >
-                  Registro
-                </button>
                 <button 
                   onClick={openLogin}
                   className="bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-6 py-2.5 rounded-full text-sm font-black transition-all hover:bg-sky-500 dark:hover:bg-sky-400 hover:text-white shadow-xl shadow-black/5 dark:shadow-white/5 uppercase tracking-widest"
