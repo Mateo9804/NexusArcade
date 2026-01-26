@@ -108,6 +108,35 @@ class GameController extends Controller
             ->where('game_name', $gameName)
             ->first();
 
+        if ($stats && $gameName === 'blackjack') {
+            $canClaim = true;
+            if ($stats->last_reward_claim) {
+                $canClaim = $stats->last_reward_claim->diffInHours(now()) >= 24;
+            }
+            $stats->can_claim_reward = $canClaim;
+        }
+
         return response()->json($stats);
+    }
+
+    public function claimDailyReward(Request $request)
+    {
+        $user = $request->user();
+        $stats = GameStats::firstOrCreate(
+            ['user_id' => $user->id, 'game_name' => 'blackjack']
+        );
+
+        if ($stats->last_reward_claim && $stats->last_reward_claim->diffInHours(now()) < 24) {
+            return response()->json(['message' => 'Aún no puedes reclamar tu recompensa'], 400);
+        }
+
+        $stats->total_chips += 500;
+        $stats->last_reward_claim = now();
+        $stats->save();
+
+        return response()->json([
+            'message' => '¡Has reclamado 500 fichas!',
+            'total_chips' => $stats->total_chips
+        ]);
     }
 }
