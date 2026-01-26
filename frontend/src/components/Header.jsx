@@ -7,18 +7,35 @@ const Header = ({ onViewStats, onGoHome }) => {
   const { isDark, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [authView, setAuthView] = useState('login');
 
   const openLogin = () => {
     setAuthView('login');
     setIsAuthModalOpen(true);
+    setIsMenuOpen(false);
+  };
+
+  const handleGoHome = () => {
+    onGoHome();
+    setIsMenuOpen(false);
+  };
+
+  const handleViewStats = () => {
+    onViewStats();
+    setIsMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
   };
 
   return (
     <>
       <header className="sticky top-0 z-50 bg-white dark:bg-[#020617]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 transition-colors duration-300">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div onClick={onGoHome} className="flex items-center space-x-3 cursor-pointer group">
+          <div onClick={handleGoHome} className="flex items-center space-x-3 cursor-pointer group">
             <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:scale-110 transition-transform">
               <span className="material-symbols-rounded text-white text-2xl">bolt</span>
             </div>
@@ -28,7 +45,7 @@ const Header = ({ onViewStats, onGoHome }) => {
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <button onClick={onGoHome} className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">Inicio</button>
+            <button onClick={handleGoHome} className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">Inicio</button>
             <a href="#juegos" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">Juegos</a>
             
             {/* Theme Toggle Button */}
@@ -44,7 +61,7 @@ const Header = ({ onViewStats, onGoHome }) => {
             {user ? (
               <div className="flex items-center gap-6">
                 <button 
-                  onClick={onViewStats}
+                  onClick={handleViewStats}
                   className="flex items-center gap-2 text-slate-500 hover:text-sky-500 transition-colors"
                   title="Estadísticas"
                 >
@@ -60,7 +77,7 @@ const Header = ({ onViewStats, onGoHome }) => {
                   </span>
                 </div>
                 <button 
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="text-slate-400 hover:text-red-500 transition-colors"
                   title="Cerrar Sesión"
                 >
@@ -79,9 +96,61 @@ const Header = ({ onViewStats, onGoHome }) => {
             )}
           </nav>
 
-          <button className="md:hidden text-slate-900 dark:text-white">
-            <span className="material-symbols-rounded">menu</span>
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            {/* Theme Toggle Button (Mobile) */}
+            <button 
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-full flex items-center justify-center border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
+            >
+              <span className="material-symbols-rounded">
+                {isDark ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-slate-900 dark:text-white w-10 h-10 flex items-center justify-center"
+            >
+              <span className="material-symbols-rounded text-3xl">
+                {isMenuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-[400px] border-b border-slate-200 dark:border-white/5' : 'max-h-0'}`}>
+          <div className="px-6 py-6 space-y-4 bg-white dark:bg-[#020617] flex flex-col">
+            <button onClick={handleGoHome} className="text-left py-2 text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">Inicio</button>
+            <a href="#juegos" onClick={() => setIsMenuOpen(false)} className="py-2 text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">Juegos</a>
+            
+            {user ? (
+              <>
+                <button onClick={handleViewStats} className="text-left py-2 flex items-center gap-3 text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">
+                  <span className="material-symbols-rounded">analytics</span>
+                  Estadísticas
+                </button>
+                <div className="py-2 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white font-black">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-lg font-black text-slate-700 dark:text-slate-200 uppercase">
+                    {user.name}
+                  </span>
+                </div>
+                <button onClick={handleLogout} className="text-left py-2 flex items-center gap-3 text-lg font-bold text-red-500 hover:text-red-600 transition-colors tracking-wide uppercase">
+                  <span className="material-symbols-rounded">logout</span>
+                  Cerrar Sesión
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={openLogin}
+                className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 py-4 rounded-2xl text-base font-black transition-all hover:bg-sky-500 dark:hover:bg-sky-400 hover:text-white uppercase tracking-widest mt-4"
+              >
+                Iniciar Sesión
+              </button>
+            )}
+          </div>
         </div>
       </header>
 

@@ -54,7 +54,8 @@ const Stats = ({ onBack }) => {
                 <div className="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5 shadow-inner">
                   {[
                     { id: 'sudoku', label: 'Sudoku' },
-                    { id: 'tictactoe', label: '3 en Raya' }
+                    { id: 'tictactoe', label: '3 en Raya' },
+                    { id: 'solitaire', label: 'Solitario' }
                   ].map((game) => (
                     <button
                       key={game.id}
@@ -104,6 +105,12 @@ const Stats = ({ onBack }) => {
                       <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Mejor Tiempo</span>
                       <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">{formatTime(stats.best_time)}</span>
                     </div>
+                    {gameName === 'solitaire' && (
+                      <div className="flex justify-between items-center px-2">
+                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Mejor Movimientos</span>
+                        <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">{stats.best_moves || '--'}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center px-2">
                       <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Tiempo Total</span>
                       <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">{formatTime(stats.total_time)}</span>
@@ -140,7 +147,9 @@ const Stats = ({ onBack }) => {
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4">Dificultad</th>
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4">Resultado</th>
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 text-right">Tiempo</th>
-                      <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 text-right">Vidas</th>
+                      <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 text-right">
+                        {gameName === 'solitaire' ? 'Movimientos' : 'Vidas'}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -168,9 +177,13 @@ const Stats = ({ onBack }) => {
                           {formatTime(item.time)}
                         </td>
                         <td className="py-6 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1 text-red-500">
-                            <span className="font-black text-sm">{item.lives_left}</span>
-                            <span className="material-symbols-rounded text-sm fill-current">favorite</span>
+                          <div className="flex items-center justify-end gap-1 text-slate-500 dark:text-slate-400">
+                            <span className="font-black text-sm">
+                              {gameName === 'solitaire' ? item.moves : item.lives_left}
+                            </span>
+                            <span className="material-symbols-rounded text-sm fill-current text-red-500">
+                              {gameName === 'solitaire' ? 'move_up' : 'favorite'}
+                            </span>
                           </div>
                         </td>
                       </tr>

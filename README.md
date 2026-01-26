@@ -49,21 +49,16 @@ npm install
 
 ## 🏃‍♂️ Cómo ejecutar el proyecto
 
-Para ver el proyecto funcionando, necesitas ejecutar ambos servidores:
+Para ver el proyecto funcionando, solo necesitas ejecutar un comando desde la carpeta `frontend`:
 
-### Iniciar el Backend
-Desde la carpeta `backend`:
+### Iniciar Frontend y Backend simultáneamente
 ```bash
-php artisan serve
-```
-Esto iniciará el servidor en `http://127.0.0.1:8000`.
-
-### Iniciar el Frontend
-Desde la carpeta `frontend`:
-```bash
+cd frontend
 npm run dev
 ```
-Esto iniciará el servidor de desarrollo de Vite, normalmente en `http://localhost:5173`.
+Esto iniciará:
+- El servidor de **Vite** (Frontend) normalmente en `http://localhost:5173`.
+- El servidor de **PHP local** (Backend) en `http://localhost:8000` apuntando a la carpeta public.
 
 ---
 Desarrollado por [Mateo9804](https://github.com/Mateo9804).

@@ -5,10 +5,11 @@ import GameCard from './components/GameCard';
 import Footer from './components/Footer';
 import Sudoku from './components/Sudoku';
 import TicTacToe from './components/TicTacToe';
+import Solitaire from './components/Solitaire';
 import Stats from './components/Stats';
 
 function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'tictactoe'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'tictactoe', 'solitaire'
 
   const navigateTo = (view) => {
     setCurrentView(view);
@@ -22,6 +23,10 @@ function App() {
 
     if (currentView === 'tictactoe') {
       return <TicTacToe onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'solitaire') {
+      return <Solitaire onBack={() => navigateTo('home')} />;
     }
 
     if (currentView === 'stats') {
@@ -64,6 +69,14 @@ function App() {
                         category="Estrategia"
                         image="/imagenes/3 en raya/3enrayalogo.webp"
                         onPlay={() => navigateTo('tictactoe')}
+                      />
+
+                      <GameCard 
+                        title="SOLITARIO"
+                        description="El clásico juego de cartas Klondike. Organiza el mazo por palos y demuestra tu paciencia y estrategia en esta versión técnica."
+                        category="Cartas"
+                        image="/imagenes/Solitario/solitarioperfil.webp"
+                        onPlay={() => navigateTo('solitaire')}
                       />
                       
                       <GameCard comingSoon />
