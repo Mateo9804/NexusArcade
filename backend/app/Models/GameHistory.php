@@ -12,6 +12,7 @@ class GameHistory extends Model
         'difficulty',
         'result',
         'time',
+        'moves',
         'lives_left'
     ];
 

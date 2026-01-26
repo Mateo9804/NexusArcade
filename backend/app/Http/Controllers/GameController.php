@@ -48,8 +48,9 @@ class GameController extends Controller
             'game_name' => 'required|string',
             'result' => 'required|in:won,lost',
             'time' => 'required|integer',
+            'moves' => 'nullable|integer',
             'difficulty' => 'nullable|string',
-            'lives_left' => 'required|integer'
+            'lives_left' => 'nullable|integer'
         ]);
 
         $user = $request->user();
@@ -64,6 +65,9 @@ class GameController extends Controller
             if (!$stats->best_time || $request->time < $stats->best_time) {
                 $stats->best_time = $request->time;
             }
+            if ($request->moves && (!$stats->best_moves || $request->moves < $stats->best_moves)) {
+                $stats->best_moves = $request->moves;
+            }
         } else {
             $stats->games_lost += 1;
         }
@@ -76,6 +80,7 @@ class GameController extends Controller
             'difficulty' => $request->difficulty,
             'result' => $request->result,
             'time' => $request->time,
+            'moves' => $request->moves,
             'lives_left' => $request->lives_left
         ]);
 

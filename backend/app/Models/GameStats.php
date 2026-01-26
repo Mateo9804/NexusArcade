@@ -13,6 +13,7 @@ class GameStats extends Model
         'games_won', 
         'games_lost', 
         'best_time', 
+        'best_moves',
         'total_time'
     ];
 
