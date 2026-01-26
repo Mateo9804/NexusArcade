@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/game/stats', [GameController::class, 'updateStats']);
     Route::get('/game/stats/{gameName}', [GameController::class, 'getStats']);
     Route::get('/game/history/{gameName}', [GameController::class, 'getHistory']);
+    Route::post('/game/blackjack/reward', [GameController::class, 'claimDailyReward']);
 });
 
 // Ruta por defecto para el inicio (opcional)

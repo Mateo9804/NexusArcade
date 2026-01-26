@@ -108,11 +108,21 @@ class GameController extends Controller
             ->where('game_name', $gameName)
             ->first();
 
-        if ($stats && $gameName === 'blackjack') {
+        if ($gameName === 'blackjack') {
             $canClaim = true;
-            if ($stats->last_reward_claim) {
-                $canClaim = $stats->last_reward_claim->diffInHours(now()) >= 24;
+            if ($stats && $stats->last_reward_claim) {
+                // Permitir reclamar si han pasado 24 horas
+                $canClaim = now()->diffInHours($stats->last_reward_claim) >= 24;
             }
+            
+            // Si no existen stats, creamos un objeto básico para la respuesta
+            if (!$stats) {
+                return response()->json([
+                    'total_chips' => 1000,
+                    'can_claim_reward' => true
+                ]);
+            }
+            
             $stats->can_claim_reward = $canClaim;
         }
 
@@ -123,11 +133,12 @@ class GameController extends Controller
     {
         $user = $request->user();
         $stats = GameStats::firstOrCreate(
-            ['user_id' => $user->id, 'game_name' => 'blackjack']
+            ['user_id' => $user->id, 'game_name' => 'blackjack'],
+            ['total_chips' => 1000]
         );
 
-        if ($stats->last_reward_claim && $stats->last_reward_claim->diffInHours(now()) < 24) {
-            return response()->json(['message' => 'Aún no puedes reclamar tu recompensa'], 400);
+        if ($stats->last_reward_claim && now()->diffInHours($stats->last_reward_claim) < 24) {
+            return response()->json(['message' => 'Aún no han pasado 24 horas'], 400);
         }
 
         $stats->total_chips += 500;
