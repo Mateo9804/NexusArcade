@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"cd ../backend && php artisan serve\"",
+    "dev": "concurrently \"vite\" \"cd ../backend && php -S localhost:8000 -t public\"",
     "dev:local": "concurrently \"vite\" \"cd ../backend && php -S localhost:8000 -t public\"",
     "build": "vite build",
     "lint": "eslint .",
