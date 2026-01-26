@@ -1,0 +1,29 @@
+[33mcommit 22455f3181433484868f1c7cf5733b401a3b680a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Mateo Vera <mateovera9804@gmail.com>
+Date:   Mon Jan 26 22:02:51 2026 +0100
+
+    NexusArcade: Blackjack completo con sistema de recompensas y logos actualizados
+
+[33mcommit 2c3e56624999fdf31308a82c9b098219a783a26b[m
+Author: Mateo Vera <mateovera9804@gmail.com>
+Date:   Mon Jan 26 22:02:22 2026 +0100
+
+    NexusArcade: Blackjack completo con sistema de recompensas y logos actualizados
+
+[33mcommit d4e3f923f72c6f7b36a836587ff948bdc97aa78c[m
+Author: Mateo Vera <mateovera9804@gmail.com>
+Date:   Mon Jan 26 21:51:30 2026 +0100
+
+    Blackjack: Implementado sistema de recompensa diaria de 500 fichas cada 24h
+
+[33mcommit b604b7c0d16f38ff575f6379df889b4dd46b9cb6[m
+Author: Mateo Vera <mateovera9804@gmail.com>
+Date:   Mon Jan 26 21:46:34 2026 +0100
+
+    Blackjack: Soporte para guardado persistente de fichas del usuario
+
+[33mcommit 9e17ea67b4614d3f5bc0845cf3037650bece7863[m
+Author: Mateo Vera <mateovera9804@gmail.com>
+Date:   Mon Jan 26 21:43:35 2026 +0100
+
+    Blackjack: Implementado juego completo con apuestas virtuales, IA del crupier y sistema de estadísticas

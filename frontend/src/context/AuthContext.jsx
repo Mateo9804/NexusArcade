@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Forzar la URL base sin el prefijo /api si las rutas están en web.php
-axios.defaults.baseURL = 'http://localhost:8000'; 
+// Usar la URL del backend desde variables de entorno o localhost por defecto
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'; 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const AuthProvider = ({ children }) => {
