@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: nexus-arcade-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: juegos_rapidos
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    image: php:8.2-fpm
+    container_name: nexus-arcade-backend
+    restart: always
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: nexusarcade
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      APP_URL: http://localhost:8000
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www
+
+  frontend:
+    image: node:20-alpine
+    container_name: nexus-arcade-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    working_dir: /app
+    command: npm run dev -- --host
+
+volumes:
+  db_data:
+
