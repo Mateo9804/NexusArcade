@@ -36,8 +36,8 @@ const Header = ({ onViewStats, onGoHome }) => {
       <header className="sticky top-0 z-50 bg-white dark:bg-[#020617]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 transition-colors duration-300">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div onClick={handleGoHome} className="flex items-center space-x-3 cursor-pointer group">
-            <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:scale-110 transition-transform">
-              <span className="material-symbols-rounded text-white text-2xl">bolt</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <img src="/imagenes/logodenexusarcade.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
               NEXUS<span className="text-sky-400">ARCADE</span>

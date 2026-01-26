@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import axios from 'axios';
+import _ from 'lodash';
 import { useAuth } from '../context/AuthContext';
 
 // --- Utilidades ---
@@ -73,6 +74,64 @@ const Blackjack = ({ onBack }) => {
   const [dealerScore, setDealerScore] = useState(0);
   const [chips, setChips] = useState(1000);
   const [currentBet, setCurrentBet] = useState(0);
+  const [canClaimReward, setCanClaimReward] = useState(false);
+  const [lastClaimTime, setLastClaimClaimTime] = useState(null);
+  const [countdown, setCountdown] = useState("");
+
+  // Cargar fichas del usuario al iniciar
+  useEffect(() => {
+    if (user) {
+      axios.get('/game/stats/blackjack').then(res => {
+        if (res.data) {
+          if (res.data.total_chips !== undefined) setChips(res.data.total_chips);
+          setCanClaimReward(res.data.can_claim_reward);
+          setLastClaimClaimTime(res.data.last_reward_claim);
+        }
+      }).catch(console.error);
+    }
+  }, [user]);
+
+  // Lógica del temporizador
+  useEffect(() => {
+    if (!lastClaimTime || canClaimReward) return;
+
+    const interval = setInterval(() => {
+      const lastClaim = new Date(lastClaimTime);
+      const nextClaim = new Date(lastClaim.getTime() + 24 * 60 * 60 * 1000);
+      const now = new Date();
+      const diff = nextClaim - now;
+
+      if (diff <= 0) {
+        setCanClaimReward(true);
+        setCountdown("");
+        clearInterval(interval);
+      } else {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [lastClaimTime, canClaimReward]);
+
+  const handleClaimReward = async () => {
+    try {
+      const res = await axios.post('/game/blackjack/reward');
+      if (res.data) {
+        setChips(res.data.total_chips);
+        setCanClaimReward(false);
+        setLastClaimClaimTime(new Date().toISOString());
+        setMessage(`¡RECOMPENSA RECLAMADA! +$500`);
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error('Error al reclamar recompensa', error);
+      setMessage(error.response?.data?.message || 'Error al reclamar');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
 
   const createDeck = () => {
     const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
@@ -121,7 +180,7 @@ const Blackjack = ({ onBack }) => {
     if (newScore > 21) {
       setGameState('finished');
       setMessage('¡TE PASASTE! LA CASA GANA');
-      saveResult('lost');
+      saveResult('lost', chips);
     }
   };
 
@@ -142,35 +201,40 @@ const Blackjack = ({ onBack }) => {
     setGameState('finished');
 
     const finalPlayerScore = calculateScore(pHand);
+    let finalChips = chips;
     
     if (tempDealerScore > 21) {
       setMessage('¡LA CASA SE PASÓ! TÚ GANAS');
-      setChips(prev => prev + currentBet * 2);
+      finalChips = chips + currentBet * 2;
+      setChips(finalChips);
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      saveResult('won');
+      saveResult('won', finalChips);
     } else if (tempDealerScore > finalPlayerScore) {
       setMessage('LA CASA GANA');
-      saveResult('lost');
+      saveResult('lost', chips);
     } else if (tempDealerScore < finalPlayerScore) {
       setMessage('¡GANASTE!');
-      setChips(prev => prev + currentBet * 2);
+      finalChips = chips + currentBet * 2;
+      setChips(finalChips);
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      saveResult('won');
+      saveResult('won', finalChips);
     } else {
       setMessage('EMPATE');
-      setChips(prev => prev + currentBet);
-      saveResult('tie');
+      finalChips = chips + currentBet;
+      setChips(finalChips);
+      saveResult('tie', finalChips);
     }
   };
 
-  const saveResult = (result) => {
+  const saveResult = (result, finalChips) => {
     if (user) {
       axios.post('/game/stats', {
         game_name: 'blackjack',
-        result: result === 'tie' ? 'won' : result, // En estadísticas simplificadas, tie cuenta como jugado
+        result: result === 'tie' ? 'won' : result,
         time: 0,
         difficulty: 'normal',
-        lives_left: 0
+        lives_left: 0,
+        total_chips: finalChips
       }).catch(console.error);
     }
   };
@@ -194,19 +258,39 @@ const Blackjack = ({ onBack }) => {
             <span className="font-black uppercase tracking-widest text-sm text-white">Salir</span>
           </button>
           
-          <div className="flex gap-8 bg-black/40 px-8 py-4 rounded-[2rem] border border-white/10 backdrop-blur-xl">
-            <div className="text-center">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">Tus Fichas</p>
-              <p className="text-2xl font-black text-white">${chips}</p>
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex gap-8 bg-black/40 px-8 py-4 rounded-[2rem] border border-white/10 backdrop-blur-xl">
+              <div className="text-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">Tus Fichas</p>
+                <p className="text-2xl font-black text-white">${chips}</p>
+              </div>
+              {currentBet > 0 && (
+                <>
+                  <div className="w-px h-10 bg-white/10 self-center"></div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 mb-1">Apuesta</p>
+                    <p className="text-2xl font-black text-white">${currentBet}</p>
+                  </div>
+                </>
+              )}
             </div>
-            {currentBet > 0 && (
-              <>
-                <div className="w-px h-10 bg-white/10 self-center"></div>
-                <div className="text-center">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 mb-1">Apuesta</p>
-                  <p className="text-2xl font-black text-white">${currentBet}</p>
-                </div>
-              </>
+
+            {/* Daily Reward Button / Timer */}
+            {canClaimReward ? (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleClaimReward}
+                className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-2 rounded-xl font-black text-[10px] shadow-xl shadow-amber-500/20 flex items-center gap-2 animate-pulse uppercase tracking-widest"
+              >
+                <span className="material-symbols-rounded text-sm">redeem</span>
+                RECLAMAR 500 GRATIS
+              </motion.button>
+            ) : (
+              <div className="bg-white/5 border border-white/5 text-slate-500 px-6 py-2 rounded-xl font-black text-[10px] flex items-center gap-2 uppercase tracking-widest cursor-not-allowed">
+                <span className="material-symbols-rounded text-sm">lock</span>
+                PRÓXIMO EN {countdown}
+              </div>
             )}
           </div>
         </div>
@@ -256,42 +340,44 @@ const Blackjack = ({ onBack }) => {
         </div>
 
         {/* Controls */}
-        <div className="mt-8 flex justify-center gap-4">
-          {gameState === 'betting' || gameState === 'finished' ? (
-            <div className="flex flex-col items-center gap-6">
-              <div className="flex gap-4">
-                {[50, 100, 500].map(amount => (
-                  <button
-                    key={amount}
-                    disabled={chips < amount}
-                    onClick={() => startNewGame(amount)}
-                    className="group relative flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 border-dashed border-white/10 hover:border-emerald-500 transition-all active:scale-95 disabled:opacity-20"
-                  >
-                    <span className="text-xs font-black text-slate-500 group-hover:text-emerald-500">APOSTAR</span>
-                    <span className="text-xl font-black text-white group-hover:text-emerald-400">${amount}</span>
-                  </button>
-                ))}
+        <div className="mt-8 flex flex-col items-center gap-6">
+          <div className="flex justify-center gap-4">
+            {gameState === 'betting' || gameState === 'finished' ? (
+              <div className="flex flex-col items-center gap-6">
+                <div className="flex gap-4">
+                  {[50, 100, 500].map(amount => (
+                    <button
+                      key={amount}
+                      disabled={chips < amount}
+                      onClick={() => startNewGame(amount)}
+                      className="group relative flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 border-dashed border-white/10 hover:border-emerald-500 transition-all active:scale-95 disabled:opacity-20"
+                    >
+                      <span className="text-xs font-black text-slate-500 group-hover:text-emerald-500">APOSTAR</span>
+                      <span className="text-xl font-black text-white group-hover:text-emerald-400">${amount}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Elige una apuesta para comenzar</p>
               </div>
-              <p className="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Elige una apuesta para comenzar</p>
-            </div>
-          ) : (
-            <div className="flex gap-6">
-              <button
-                disabled={gameState !== 'playing'}
-                onClick={handleHit}
-                className="bg-white text-slate-950 px-12 py-5 rounded-[2rem] font-black text-lg hover:bg-sky-400 hover:text-white transition-all active:scale-95 shadow-xl disabled:opacity-50"
-              >
-                PEDIR CARTA
-              </button>
-              <button
-                disabled={gameState !== 'playing'}
-                onClick={() => handleStand()}
-                className="bg-slate-800 text-white px-12 py-5 rounded-[2rem] font-black text-lg hover:bg-slate-700 transition-all active:scale-95 border border-white/10 shadow-xl disabled:opacity-50"
-              >
-                PLANTARSE
-              </button>
-            </div>
-          )}
+            ) : (
+              <div className="flex gap-6">
+                <button
+                  disabled={gameState !== 'playing'}
+                  onClick={handleHit}
+                  className="bg-white text-slate-950 px-12 py-5 rounded-[2rem] font-black text-lg hover:bg-sky-400 hover:text-white transition-all active:scale-95 shadow-xl disabled:opacity-50"
+                >
+                  PEDIR CARTA
+                </button>
+                <button
+                  disabled={gameState !== 'playing'}
+                  onClick={() => handleStand()}
+                  className="bg-slate-800 text-white px-12 py-5 rounded-[2rem] font-black text-lg hover:bg-slate-700 transition-all active:scale-95 border border-white/10 shadow-xl disabled:opacity-50"
+                >
+                  PLANTARSE
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -312,4 +398,3 @@ const Blackjack = ({ onBack }) => {
 };
 
 export default Blackjack;
-

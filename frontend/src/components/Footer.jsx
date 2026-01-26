@@ -7,8 +7,8 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="space-y-4 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start space-x-3">
-              <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
-                <span className="material-symbols-rounded text-white text-lg">bolt</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <img src="/imagenes/logodenexusarcade.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">NexusArcade</span>
             </div>

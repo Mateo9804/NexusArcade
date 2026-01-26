@@ -88,6 +88,7 @@ function App() {
                         title="BLACKJACK"
                         description="Duelo contra la casa en el clásico 21. Gestiona tus fichas, decide cuándo pedir o plantarte y busca el Blackjack para ganar a lo grande."
                         category="Mesa"
+                        image="/imagenes/blackjack/blackjacklogo.webp"
                         onPlay={() => navigateTo('blackjack')}
                       />
                     </div>
