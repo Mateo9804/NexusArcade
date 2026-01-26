@@ -34,3 +34,6 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 # Exponer el puerto 80 (Apache lo usa por defecto)
 EXPOSE 80
 
+# Script para ejecutar migraciones y luego iniciar Apache
+CMD php artisan migrate --force && apache2-foreground
+
