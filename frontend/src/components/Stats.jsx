@@ -55,7 +55,8 @@ const Stats = ({ onBack }) => {
                   {[
                     { id: 'sudoku', label: 'Sudoku' },
                     { id: 'tictactoe', label: '3 en Raya' },
-                    { id: 'solitaire', label: 'Solitario' }
+                    { id: 'solitaire', label: 'Solitario' },
+                    { id: 'blackjack', label: 'Blackjack' }
                   ].map((game) => (
                     <button
                       key={game.id}

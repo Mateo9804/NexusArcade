@@ -6,10 +6,11 @@ import Footer from './components/Footer';
 import Sudoku from './components/Sudoku';
 import TicTacToe from './components/TicTacToe';
 import Solitaire from './components/Solitaire';
+import Blackjack from './components/Blackjack';
 import Stats from './components/Stats';
 
 function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'tictactoe', 'solitaire'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'tictactoe', 'solitaire', 'blackjack'
 
   const navigateTo = (view) => {
     setCurrentView(view);
@@ -27,6 +28,10 @@ function App() {
 
     if (currentView === 'solitaire') {
       return <Solitaire onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'blackjack') {
+      return <Blackjack onBack={() => navigateTo('home')} />;
     }
 
     if (currentView === 'stats') {
@@ -78,9 +83,13 @@ function App() {
                         image="/imagenes/Solitario/solitarioperfil.webp"
                         onPlay={() => navigateTo('solitaire')}
                       />
-                      
-                      <GameCard comingSoon />
-                      <GameCard comingSoon />
+
+                      <GameCard 
+                        title="BLACKJACK"
+                        description="Duelo contra la casa en el clásico 21. Gestiona tus fichas, decide cuándo pedir o plantarte y busca el Blackjack para ganar a lo grande."
+                        category="Mesa"
+                        onPlay={() => navigateTo('blackjack')}
+                      />
                     </div>
           </div>
         </section>
