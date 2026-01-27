@@ -16,7 +16,7 @@ const Hero = () => {
         </div>
         
         <h1 className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter leading-none">
-          JUEGA SIN <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-500 dark:from-sky-400 dark:to-indigo-400">LÍMITES</span>
+          NEXUS <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-500 dark:from-sky-400 dark:to-indigo-400">ARCADE LIVE</span>
         </h1>
         <p className="text-slate-600 dark:text-slate-400 text-lg md:text-2xl max-w-3xl mx-auto mb-14 leading-relaxed font-medium">
           La mejor colección de juegos rápidos, adictivos y gratuitos. 
