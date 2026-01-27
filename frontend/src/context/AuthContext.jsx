@@ -4,7 +4,8 @@ import axios from 'axios';
 const AuthContext = createContext();
 
 // Usar la URL del backend desde variables de entorno o localhost por defecto
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`;
 console.log("Conectando a la API en:", API_URL);
 
 axios.defaults.baseURL = API_URL; 

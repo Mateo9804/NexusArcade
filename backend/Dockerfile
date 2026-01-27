@@ -32,8 +32,8 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 # Copiar el resto de los archivos
 COPY . .
 
-# Forzar eliminación de cualquier cache que se haya colado en Git
-RUN rm -rf bootstrap/cache/*.php && php artisan config:clear
+# Limpiar cache de configuración, rutas y vistas
+RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
 
 # Dar permisos
 RUN chown -R www-data:www-data storage bootstrap/cache
@@ -45,5 +45,5 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 
 EXPOSE 80
 
-# Comando final: Limpiar cache, Migraciones + Apache
-CMD php artisan config:clear && php artisan migrate --force && apache2-foreground
+# Comando final: Limpiar TODO antes de arrancar
+CMD php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && apache2-foreground
