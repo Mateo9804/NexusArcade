@@ -12,8 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
-            '*', // Desactivar CSRF para todas las rutas en desarrollo
+            '*',
         ]);
+        
+        // Forzar CORS para permitir todo en producción
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

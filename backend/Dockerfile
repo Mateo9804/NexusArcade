@@ -32,8 +32,8 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 # Copiar el resto de los archivos
 COPY . .
 
-# Limpiar cache de configuración si existiera
-RUN php artisan config:clear
+# Forzar eliminación de cualquier cache que se haya colado en Git
+RUN rm -rf bootstrap/cache/*.php && php artisan config:clear
 
 # Dar permisos
 RUN chown -R www-data:www-data storage bootstrap/cache
