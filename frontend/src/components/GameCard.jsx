@@ -32,9 +32,14 @@ const GameCard = ({ title, description, category, image, comingSoon, onPlay }) =
       </div>
       
       <div className="p-10 -mt-8 relative z-10 bg-gradient-to-b from-transparent via-white/90 dark:via-slate-900/90 to-white dark:to-slate-900 rounded-b-[2.5rem]">
-        <div className="flex justify-between items-start mb-4">
-          <h3 className="text-3xl font-black text-slate-900 dark:text-white leading-none tracking-tight">{title}</h3>
-          <span className="bg-sky-500/10 text-sky-500 dark:text-sky-400 text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full border border-sky-500/20">
+        <div className="flex justify-between items-center mb-4 gap-4">
+          <h3 
+            className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-none tracking-tight truncate"
+            title={title}
+          >
+            {title}
+          </h3>
+          <span className="flex-shrink-0 bg-sky-500/10 text-sky-500 dark:text-sky-400 text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full border border-sky-500/20">
             {category}
           </span>
         </div>

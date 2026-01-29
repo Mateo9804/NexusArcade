@@ -3,7 +3,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 
-const Header = ({ onViewStats, onGoHome }) => {
+const Header = ({ onViewStats, onViewAchievements, onGoHome }) => {
   const { isDark, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -23,6 +23,11 @@ const Header = ({ onViewStats, onGoHome }) => {
 
   const handleViewStats = () => {
     onViewStats();
+    setIsMenuOpen(false);
+  };
+
+  const handleViewAchievements = () => {
+    onViewAchievements();
     setIsMenuOpen(false);
   };
 
@@ -67,6 +72,14 @@ const Header = ({ onViewStats, onGoHome }) => {
                 >
                   <span className="material-symbols-rounded">analytics</span>
                   <span className="text-xs font-black uppercase tracking-widest hidden lg:inline">Stats</span>
+                </button>
+                <button 
+                  onClick={handleViewAchievements}
+                  className="flex items-center gap-2 text-slate-500 hover:text-sky-500 transition-colors"
+                  title="Logros"
+                >
+                  <span className="material-symbols-rounded text-amber-500">military_tech</span>
+                  <span className="text-xs font-black uppercase tracking-widest hidden lg:inline">Logros</span>
                 </button>
                 <div className="flex items-center gap-3 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <div className="w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs font-black">
@@ -128,6 +141,10 @@ const Header = ({ onViewStats, onGoHome }) => {
                 <button onClick={handleViewStats} className="text-left py-2 flex items-center gap-3 text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">
                   <span className="material-symbols-rounded">analytics</span>
                   Estadísticas
+                </button>
+                <button onClick={handleViewAchievements} className="text-left py-2 flex items-center gap-3 text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-sky-500 dark:hover:text-white transition-colors tracking-wide uppercase">
+                  <span className="material-symbols-rounded text-amber-500">military_tech</span>
+                  Logros
                 </button>
                 <div className="py-2 flex items-center gap-3">
                   <div className="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white font-black">

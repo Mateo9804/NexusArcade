@@ -163,11 +163,25 @@ const TicTacToe = ({ onBack }) => {
     setBoard(Array(9).fill(null));
     setWinner(null);
     setWinningLine([]);
-    setIsXNext(true);
+    const startsX = Math.random() > 0.5;
+    setIsXNext(startsX);
     setDifficulty(level);
     setShowLevelModal(false);
     setTimer(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Si la IA empieza (O)
+    if (!startsX) {
+      setIsProcessing(true);
+      setTimeout(() => {
+        const aiMove = getBestMove(Array(9).fill(null), level);
+        const newBoard = Array(9).fill(null);
+        newBoard[aiMove] = 'O';
+        setBoard(newBoard);
+        setIsXNext(true);
+        setIsProcessing(false);
+      }, 800);
+    }
   };
 
   const formatTime = (seconds) => {

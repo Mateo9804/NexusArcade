@@ -51,26 +51,34 @@ const Stats = ({ onBack }) => {
           <h1 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Estadísticas</h1>
         </div>
 
-                <div className="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5 shadow-inner">
-                  {[
-                    { id: 'sudoku', label: 'Sudoku' },
-                    { id: 'tictactoe', label: '3 en Raya' },
-                    { id: 'solitaire', label: 'Solitario' },
-                    { id: 'blackjack', label: 'Blackjack' }
-                  ].map((game) => (
-                    <button
-                      key={game.id}
-                      onClick={() => { setGameName(game.id); setCurrentPage(1); }}
-                      className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                        gameName === game.id 
-                        ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/30' 
-                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                      }`}
-                    >
-                      {game.label}
-                    </button>
-                  ))}
-                </div>
+        <div className="flex flex-col items-end gap-3">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mr-2">Elegir Juego</span>
+          <div className="relative group min-w-[240px]">
+            <select
+              value={gameName}
+              onChange={(e) => { setGameName(e.target.value); setCurrentPage(1); }}
+              className="w-full bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 px-6 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-slate-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:border-sky-500 transition-all shadow-xl shadow-black/5"
+            >
+              {[
+                { id: 'sudoku', label: 'Sudoku' },
+                { id: 'tictactoe', label: '3 en Raya' },
+                { id: 'solitaire', label: 'Solitario' },
+                { id: 'blackjack', label: 'Blackjack' },
+                { id: 'minesweeper', label: 'Buscaminas' },
+                { id: 'chess', label: 'Ajedrez' },
+                { id: 'tetris', label: 'Tetris' },
+                { id: 'conecta4', label: 'Conecta 4' }
+              ].map((game) => (
+                <option key={game.id} value={game.id} className="bg-white dark:bg-slate-900">
+                  {game.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-sky-500">
+              <span className="material-symbols-rounded">expand_more</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {loading ? (
@@ -103,10 +111,14 @@ const Stats = ({ onBack }) => {
 
                   <div className="space-y-4">
                     <div className="flex justify-between items-center px-2">
-                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Mejor Tiempo</span>
-                      <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">{formatTime(stats.best_time)}</span>
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                        {gameName === 'tetris' ? 'Mejor Puntaje' : 'Mejor Tiempo'}
+                      </span>
+                      <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+                        {gameName === 'tetris' ? stats.best_moves : formatTime(stats.best_time)}
+                      </span>
                     </div>
-                    {gameName === 'solitaire' && (
+                    {(gameName === 'solitaire' || gameName === 'chess' || gameName === 'conecta4') && (
                       <div className="flex justify-between items-center px-2">
                         <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Mejor Movimientos</span>
                         <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">{stats.best_moves || '--'}</span>
@@ -149,7 +161,9 @@ const Stats = ({ onBack }) => {
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4">Resultado</th>
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 text-right">Tiempo</th>
                       <th className="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 text-right">
-                        {gameName === 'solitaire' ? 'Movimientos' : 'Vidas'}
+                        {gameName === 'tetris' ? 'Puntos' : 
+                         (gameName === 'solitaire' || gameName === 'chess' || gameName === 'conecta4') ? 'Movimientos' : 
+                         'Vidas'}
                       </th>
                     </tr>
                   </thead>
@@ -180,10 +194,10 @@ const Stats = ({ onBack }) => {
                         <td className="py-6 px-4 text-right">
                           <div className="flex items-center justify-end gap-1 text-slate-500 dark:text-slate-400">
                             <span className="font-black text-sm">
-                              {gameName === 'solitaire' ? item.moves : item.lives_left}
+                              {(gameName === 'solitaire' || gameName === 'chess' || gameName === 'conecta4' || gameName === 'tetris') ? item.moves : item.lives_left}
                             </span>
                             <span className="material-symbols-rounded text-sm fill-current text-red-500">
-                              {gameName === 'solitaire' ? 'move_up' : 'favorite'}
+                              {(gameName === 'solitaire' || gameName === 'chess' || gameName === 'conecta4' || gameName === 'tetris') ? 'trending_up' : 'favorite'}
                             </span>
                           </div>
                         </td>

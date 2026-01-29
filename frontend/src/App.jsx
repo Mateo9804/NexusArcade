@@ -7,10 +7,15 @@ import Sudoku from './components/Sudoku';
 import TicTacToe from './components/TicTacToe';
 import Solitaire from './components/Solitaire';
 import Blackjack from './components/Blackjack';
+import Minesweeper from './components/Minesweeper';
+import ChessGame from './components/ChessGame';
+import TetrisBlockrain from './components/TetrisBlockrain';
+import Conecta4 from './components/Conecta4';
 import Stats from './components/Stats';
+import Achievements from './components/Achievements';
 
 function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'tictactoe', 'solitaire', 'blackjack'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'sudoku', 'stats', 'achievements', 'tictactoe', 'solitaire', 'blackjack', 'minesweeper', 'chess', 'tetris', 'conecta4'
 
   const navigateTo = (view) => {
     setCurrentView(view);
@@ -34,8 +39,28 @@ function App() {
       return <Blackjack onBack={() => navigateTo('home')} />;
     }
 
+    if (currentView === 'minesweeper') {
+      return <Minesweeper onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'chess') {
+      return <ChessGame onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'tetris') {
+      return <TetrisBlockrain onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'conecta4') {
+      return <Conecta4 onBack={() => navigateTo('home')} />;
+    }
+
     if (currentView === 'stats') {
       return <Stats onBack={() => navigateTo('home')} />;
+    }
+
+    if (currentView === 'achievements') {
+      return <Achievements onBack={() => navigateTo('home')} />;
     }
 
     return (
@@ -91,6 +116,38 @@ function App() {
                         image="/imagenes/blackjack/blackjacklogo.webp"
                         onPlay={() => navigateTo('blackjack')}
                       />
+
+                      <GameCard 
+                        title="BUSCAMINAS"
+                        description="El clásico juego de lógica y deducción. Despeja el campo de minas sin hacer explotar ninguna, usa banderas para marcar peligros y bate tu mejor tiempo."
+                        category="Estrategia"
+                        image="/imagenes/buscaminas/buscaminasfoto.webp"
+                        onPlay={() => navigateTo('minesweeper')}
+                      />
+
+                      <GameCard 
+                        title="AJEDREZ"
+                        description="El rey de los juegos de mesa. Enfrenta a nuestra IA en diferentes niveles de dificultad, analiza tus movimientos y mejora tu estrategia en cada partida."
+                        category="Estrategia"
+                        image="/imagenes/ajedrez/logoajedrez.webp"
+                        onPlay={() => navigateTo('chess')}
+                      />
+
+                      <GameCard 
+                        title="TETRIS"
+                        description="El clásico renovado con Blockrain.js. Disfruta de la mejor jugabilidad con skins personalizadas y una interfaz arcade retro."
+                        category="Puzzle"
+                        image="/imagenes/tetris/tetrislogo.webp"
+                        onPlay={() => navigateTo('tetris')}
+                      />
+
+                      <GameCard 
+                        title="CONECTA 4"
+                        description="Duelo de estrategia por turnos impulsado por boardgame.io. Alinea 4 fichas antes que tu rival en esta versión técnica y minimalista."
+                        category="Estrategia"
+                        image="/imagenes/conecta4/contecta4logo.webp"
+                        onPlay={() => navigateTo('conecta4')}
+                      />
                     </div>
           </div>
         </section>
@@ -100,7 +157,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#020617] text-slate-900 dark:text-slate-200 selection:bg-sky-500/30 flex flex-col">
-      <Header onViewStats={() => navigateTo('stats')} onGoHome={() => navigateTo('home')} />
+      <Header 
+        onViewStats={() => navigateTo('stats')} 
+        onViewAchievements={() => navigateTo('achievements')}
+        onGoHome={() => navigateTo('home')} 
+      />
       <main className="flex-grow">
         {renderContent()}
       </main>
